@@ -53,15 +53,10 @@ import deepnetts.data.MLDataItem;
  * @author Zoran Sevarac <zoran.sevarac@deepnetts.com>
  */
 public class SpamClassifier {
-
-    // svi clanci treba da su tips and tricks za primenu DL za svoje podatke. Moram da steknem poverenje, a ne samo da mu uzmem mail i da mu prodamkomercijalnu verziju.
     
     public static void main(String[] args) throws DeepNettsException, IOException, ClassificationException {
 
-         /*daj objasnejnje u jednoj recenici i link za vise, ne samo link za vise!
-         rename DeepNettsBasicDataSetIytem to MLDataItem<I, O>
-         normalizer da moze da normmalizuje jedan data item*/
-                // testirak u intellij-u putanju     
+        // testirak u intellij-u putanju     
                 
         String csvFile = "spam.csv"; // CSV file with spam data. For more about CSV files see http://www.deepnetts.com/blog/terms#csv
         int numInputs = 57;          // 57 input features which are used to determine if email is a spam (capital letters, specific words etc. for details see ... )
@@ -83,8 +78,9 @@ public class SpamClassifier {
         norm.normalize(trainingSet);
         norm.normalize(testSet);
         System.out.println(testSet.get(0).getInput());
+        
         // Create an instance of the Feed Forward Neural Network using builder. 
-        // To understand about it's structure and components see http://www.deepnetts.com/blog/terms#feed-forward-net
+        // To understand structure and components of the neural network see http://www.deepnetts.com/blog/terms#feed-forward-net
         FeedForwardNetwork neuralNet = FeedForwardNetwork.builder()
                 .addInputLayer(numInputs)
                 .addFullyConnectedLayer(30, ActivationType.TANH)
