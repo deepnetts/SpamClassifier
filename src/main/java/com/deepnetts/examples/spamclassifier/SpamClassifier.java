@@ -34,7 +34,7 @@ import javax.visrec.ml.ClassificationException;
 import javax.visrec.ml.classification.BinaryClassifier;
 import javax.visrec.ml.data.DataSet;
 import visrec.ri.ml.classification.FeedForwardNetBinaryClassifier;
-
+import deepnetts.data.MLDataItem;
 
 /**
  * Spam  Classification example.
@@ -46,30 +46,45 @@ import visrec.ri.ml.classification.FeedForwardNetBinaryClassifier;
  * Step by step tutorial is available at.
  * Additional concise explanations of the basic machine learning steps and neural network concepts
  * are given as links in code comments.
+ * See {@link <a href="">Spam Classification Article</a>}
+ *
+ * Generisi javadoc za Deep Netts i prikljuci uz ovaj kod. Ubaci linkove ka clancima
  * 
  * @author Zoran Sevarac <zoran.sevarac@deepnetts.com>
  */
 public class SpamClassifier {
 
+    // svi clanci treba da su tips and tricks za primenu DL za svoje podatke. Moram da steknem poverenje, a ne samo da mu uzmem mail i da mu prodamkomercijalnu verziju.
+    
     public static void main(String[] args) throws DeepNettsException, IOException, ClassificationException {
 
-        int numInputs = 57; // 57 input features which are used to determine if email is a spam (for more detail see)
-        int numOutputs = 1; // probability that email is a spam
+         /*daj objasnejnje u jednoj recenici i link za vise, ne samo link za vise!
+         rename DeepNettsBasicDataSetIytem to MLDataItem<I, O>
+         normalizer da moze da normmalizuje jedan data item*/
+                // testirak u intellij-u putanju     
+                
+        String csvFile = "spam.csv"; // CSV file with spam data. For more about CSV files see http://www.deepnetts.com/blog/terms#csv
+        int numInputs = 57;          // 57 input features which are used to determine if email is a spam (capital letters, specific words etc. for details see ... )
+        int numOutputs = 1;          // and one output which indicates if email is a spam or not  
         
-        // Load data set from csv file.  What is a CSV file and dataset? <BlogLink>
-        DataSet exampleEmails = DataSets.readCsv("spam.csv", numInputs, numOutputs, true);             
+        // Load data set from CSV file and create instance of data set.  
+        // To learn more about data sets used for machine learning see http://www.deepnetts.com/blog/terms#data-set
+        DataSet<MLDataItem> exampleEmailsDataSet = DataSets.readCsv(csvFile, numInputs, numOutputs, true);             
 
-        // Split data set into train and test set. For more about why are we doing this see <BlogLink>
-        DataSet[] trainAndTestSet = exampleEmails.split(0.7, 0.3);
-        DataSet trainingSet = trainAndTestSet[0];
-        DataSet testSet = trainAndTestSet[1];
+        // Split data set into training and test set. 
+        // To understand why this needs to be done see http://www.deepnetts.com/blog/terms#training-test-split
+        DataSet<MLDataItem>[] trainAndTestSet = exampleEmailsDataSet.split(0.7, 0.3);
+        DataSet<MLDataItem> trainingSet = trainAndTestSet[0];
+        DataSet<MLDataItem> testSet = trainAndTestSet[1];
         
-        // Normalize data. To learn why are we doing this see <BlogLink>
+        // PREPARE DATA: Perform max normalization. 
+        // To undertsand why is normalization important and how to do it properly see http://www.deepnetts.com/blog/terms#normalization
         MaxNormalizer norm = new MaxNormalizer(trainingSet);
         norm.normalize(trainingSet);
         norm.normalize(testSet);
-        
-        // Create instance of feed forward neural network using its builder.To better understand neural network components and settings see this article.
+        System.out.println(testSet.get(0).getInput());
+        // Create an instance of the Feed Forward Neural Network using builder. 
+        // To understand about it's structure and components see http://www.deepnetts.com/blog/terms#feed-forward-net
         FeedForwardNetwork neuralNet = FeedForwardNetwork.builder()
                 .addInputLayer(numInputs)
                 .addFullyConnectedLayer(30, ActivationType.TANH)
@@ -78,31 +93,29 @@ public class SpamClassifier {
                 .randomSeed(123)
                 .build();
 
-        // CONFIGURE: set training settings
-        neuralNet.getTrainer().setMaxError(0.2f)
-                              .setLearningRate(0.01f);
+        // CONFIGURE LEARNING ALGORITHM. 
+        // For more about training and available settings see http://www.deepnetts.com/blog/terms#network-training
+        neuralNet.getTrainer().setMaxError(0.2f)        // training stops when when this error is reached
+                              .setLearningRate(0.01f);  // size of the step that learning algorithm takes in each iteration
         
-        // TRAIN: Start training Read this blog to understand Training output - da li sve ovo da ubacim u jedan clanak u kome imam vise paragrafa ili vise kracih clanaka od po 30 sec - 1 min
+        // TRAIN: Start training. To understand training output see link
         neuralNet.train(trainingSet);
         
-        // TEST: test network /  evaluate classifier  Undesrtand classifier evaluation metrics <blog article>
+        // TEST: test network /  evaluate classifier.
+        // To understand classifier evaluation see http://www.deepnetts.com/blog/terms#evaluation
         EvaluationMetrics em = Evaluators.evaluateClassifier(neuralNet, testSet);
         System.out.println(em);
+                        
+        // HOW TO USE IT: create a binary classifier using trained network, and use it through user friendly Java ML API. 
+        // To understand what is a binary classifier see http://www.deepnetts.com/blog/terms#binary-classifier
+        BinaryClassifier<float[]> binaryClassifier = new FeedForwardNetBinaryClassifier(neuralNet);        
                 
-        // USE: create binary classifier using trained network, and use it through VisRec API
-        // array is data structure that lacks semantics, and that exactly what Java developers like
-        BinaryClassifier<float[]> binClassifier = new FeedForwardNetBinaryClassifier(neuralNet);        
+        // get test email
+        float[] testEmail = testSet.get(0).getInput().getValues(); // get some email features to check if it is a spam or not
+        Float result = binaryClassifier.classify(testEmail);   // This is how you use trained l model in your app
         
-        // get email to check if it is a spam
-        float[] testEmail = getTestEmailFeatures(); // get it from test set
-        Float result = binClassifier.classify(testEmail);
+        System.out.println("Spam probability: "+result);    
         
-        System.out.println("Spam probability: "+result);        
     }
     
-    static float[] getTestEmailFeatures() {
-        float[] emailFeatures = new float[57];
-        emailFeatures[56] = 1; // todo set 
-        return emailFeatures;
-    }
 }
