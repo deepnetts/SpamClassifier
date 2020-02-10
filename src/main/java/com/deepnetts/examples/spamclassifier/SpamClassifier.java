@@ -49,14 +49,13 @@ import deepnetts.data.MLDataItem;
  * See {@link <a href="">Spam Classification Article</a>}
  *
  * Generisi javadoc za Deep Netts i prikljuci uz ovaj kod. Ubaci linkove ka clancima
+ * testiraj i intellij
  * 
  * @author Zoran Sevarac <zoran.sevarac@deepnetts.com>
  */
 public class SpamClassifier {
     
     public static void main(String[] args) throws DeepNettsException, IOException, ClassificationException {
-
-        // testirak u intellij-u putanju     
                 
         String csvFile = "spam.csv"; // CSV file with spam data. For more about CSV files see http://www.deepnetts.com/blog/terms#csv
         int numInputs = 57;          // 57 input features which are used to determine if email is a spam (capital letters, specific words etc. for details see ... )
@@ -74,16 +73,15 @@ public class SpamClassifier {
         
         // PREPARE DATA: Perform max normalization. 
         // To undertsand why is normalization important and how to do it properly see http://www.deepnetts.com/blog/terms#normalization
-        MaxNormalizer norm = new MaxNormalizer(trainingSet);
-        norm.normalize(trainingSet);
-        norm.normalize(testSet);
-        System.out.println(testSet.get(0).getInput());
+        MaxNormalizer norm = new MaxNormalizer(trainingSet); // create and initialize normalizer using training set
+        norm.normalize(trainingSet); // normalize training set
+        norm.normalize(testSet); // normalize test set
         
         // Create an instance of the Feed Forward Neural Network using builder. 
         // To understand structure and components of the neural network see http://www.deepnetts.com/blog/terms#feed-forward-net
         FeedForwardNetwork neuralNet = FeedForwardNetwork.builder()
                 .addInputLayer(numInputs)
-                .addFullyConnectedLayer(30, ActivationType.TANH)
+                .addFullyConnectedLayer(100, ActivationType.TANH)
                 .addOutputLayer(numOutputs, ActivationType.SIGMOID)
                 .lossFunction(LossType.CROSS_ENTROPY)
                 .randomSeed(123)
@@ -91,8 +89,9 @@ public class SpamClassifier {
 
         // CONFIGURE LEARNING ALGORITHM. 
         // For more about training and available settings see http://www.deepnetts.com/blog/terms#network-training
-        neuralNet.getTrainer().setMaxError(0.2f)        // training stops when when this error is reached
-                              .setLearningRate(0.01f);  // size of the step that learning algorithm takes in each iteration
+        neuralNet.getTrainer().setMaxError(0.03f)        // training stops when when this error is reached
+                              .setMaxEpochs(10000)       // or if it has been running for specified number of epochs
+                              .setLearningRate(0.001f);  // size of the step for adjuting internal parameters that learning algorithm takes in each iteration
         
         // TRAIN: Start training. To understand training output see link
         neuralNet.train(trainingSet);
