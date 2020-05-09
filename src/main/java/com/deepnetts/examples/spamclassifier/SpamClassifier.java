@@ -33,7 +33,7 @@ import java.io.IOException;
 import javax.visrec.ml.ClassificationException;
 import javax.visrec.ml.classification.BinaryClassifier;
 import javax.visrec.ml.data.DataSet;
-import visrec.ri.ml.classification.FeedForwardNetBinaryClassifier;
+import javax.visrec.ri.ml.classification.FeedForwardNetBinaryClassifier;
 import deepnetts.data.MLDataItem;
 
 /**
