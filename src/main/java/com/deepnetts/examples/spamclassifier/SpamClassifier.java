@@ -105,7 +105,7 @@ public class SpamClassifier {
         // To understand what is a binary classifier see http://www.deepnetts.com/blog/terms#binary-classifier
         BinaryClassifier<float[]> binaryClassifier = new FeedForwardNetBinaryClassifier(neuralNet);        
                 
-        // get test email
+        // get a test email from the test set
         float[] testEmail = testSet.get(0).getInput().getValues(); // get some email features to check if it is a spam or not
         Float result = binaryClassifier.classify(testEmail);   // This is how you use trained l model in your app
         
