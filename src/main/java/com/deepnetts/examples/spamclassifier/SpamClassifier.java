@@ -1,24 +1,3 @@
-/**
- *  DeepNetts is pure Java Deep Learning Library with support for Backpropagation
- *  based learning and image recognition.
- *
- *  Copyright (C) 2017  Zoran Sevarac <sevarac@gmail.com>
- *
- * This file is part of DeepNetts.
- *
- * DeepNetts is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
- * Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <https://www.gnu.org/licenses/>.package
- * deepnetts.core;
- */
 package com.deepnetts.examples.spamclassifier;
 
 import deepnetts.data.DataSets;
@@ -40,16 +19,13 @@ import deepnetts.data.MLDataItem;
  * Spam  Classification example.
  * This example shows how to create basic machine learning model for spam classification using neural networks.
  * Based on the set of example emails  CSV file given as data set, the model will learn to predict whether some given email is spam or not.
+ * The same workflow can be applied for other similar classification problems and different data, with small adjustments.
  *
- * What needs to be done in order to apply this for custom problem.1, 2, 3 ...
- * 
  * Step by step tutorial is available at.
  * Additional concise explanations of the basic machine learning steps and neural network concepts
  * are given as links in code comments.
- * See {@link <a href="">Spam Classification Article</a>}
+ * See {@link <a href="TBD">Spam Classification Article</a>}
  *
- * Generisi javadoc za Deep Netts i prikljuci uz ovaj kod. Ubaci linkove ka clancima
- * testiraj i intellij
  * 
  * @author Zoran Sevarac <zoran.sevarac@deepnetts.com>
  */
@@ -67,7 +43,7 @@ public class SpamClassifier {
 
         // Split data set into training and test set. 
         // To understand why this needs to be done see http://www.deepnetts.com/blog/terms#training-test-split
-        DataSet<MLDataItem>[] trainAndTestSet = exampleEmailsDataSet.split(0.7, 0.3);
+        DataSet<MLDataItem>[] trainAndTestSet = exampleEmailsDataSet.split(0.6, 0.4);
         DataSet<MLDataItem> trainingSet = trainAndTestSet[0];
         DataSet<MLDataItem> testSet = trainAndTestSet[1];
         
