@@ -81,7 +81,7 @@ public class SpamClassifier {
         // To understand structure and components of the neural network see http://www.deepnetts.com/blog/terms#feed-forward-net
         FeedForwardNetwork neuralNet = FeedForwardNetwork.builder()
                 .addInputLayer(numInputs)
-                .addFullyConnectedLayer(100, ActivationType.TANH)
+                .addFullyConnectedLayer(15)
                 .addOutputLayer(numOutputs, ActivationType.SIGMOID)
                 .lossFunction(LossType.CROSS_ENTROPY)
                 .randomSeed(123)
@@ -109,7 +109,7 @@ public class SpamClassifier {
         float[] testEmail = testSet.get(0).getInput().getValues(); // get some email features to check if it is a spam or not
         Float result = binaryClassifier.classify(testEmail);   // This is how you use trained l model in your app
         
-        System.out.println("Spam probability: "+result);    
+        System.out.println("Spam probability for the given input: "+result);    
         
     }
     
